@@ -1,6 +1,7 @@
-import { ActionIcon, Avatar } from '@mantine/core';
+import { Avatar } from '@mantine/core';
 import PropTypes from 'prop-types';
-import { ThumbDown, ThumbUp } from 'tabler-icons-react';
+import ThumbDownIconAction from './ThumbDownAction';
+import ThumbUpIconAction from './ThumbUpAction';
 
 // TODO: Replace propTypes comments with Array of Objects
 function ThreadComments({ comments }) {
@@ -17,12 +18,8 @@ function ThreadComments({ comments }) {
               Illum quis, numquam veritatis voluptatibus magni illo? Tempora.
             </div>
             <div className="flex flex-wrap items-center py-1 gap-3">
-              <ActionIcon>
-                <ThumbUp />
-              </ActionIcon>
-              <ActionIcon>
-                <ThumbDown />
-              </ActionIcon>
+              <ThumbUpIconAction />
+              <ThumbDownIconAction />
             </div>
             <div className="text-xs text-gray-400 font-semibold self-end">
               {new Date().toLocaleDateString('id-ID', {
