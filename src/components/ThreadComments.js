@@ -39,3 +39,5 @@ function ThreadComments({ comments }) {
 ThreadComments.propTypes = {
   comments: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
+
+export default ThreadComments;

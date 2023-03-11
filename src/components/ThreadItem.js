@@ -1,9 +1,13 @@
-import { ActionIcon, Badge, Card } from '@mantine/core';
+import { Badge, Card } from '@mantine/core';
 import { Link } from 'react-router-dom';
-import { Message, ThumbDown, ThumbUp } from 'tabler-icons-react';
 import PropTypes from 'prop-types';
+import ThumbUpIconAction from './ThumbUpAction';
+import ThumbDownIconAction from './ThumbDownAction';
 
 function ThreadItem({ thread, cardWithBorder = false }) {
+  const date = new Date();
+  const dateFormat = date.toLocaleDateString('id-ID', { dateStyle: 'full' });
+  const timeFormat = date.toLocaleTimeString();
   return (
     <Card withBorder={cardWithBorder}>
       <div className="flex flex-col">
@@ -13,9 +17,7 @@ function ThreadItem({ thread, cardWithBorder = false }) {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quae.
           </div>
         </Link>
-        <div className="text-xs text-gray-400 pb-3">
-          {new Date().toLocaleDateString('id-ID', { dateStyle: 'full' })}
-        </div>
+        <div className="text-xs text-gray-400 pb-3">{`${dateFormat} ${timeFormat}`}</div>
         <div className="text-gray-600 text-sm pb-3">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda eum dolorum ratione
           doloremque magni aliquam alias officiis nulla beatae impedit? Placeat modi cumque quis
@@ -26,16 +28,9 @@ function ThreadItem({ thread, cardWithBorder = false }) {
             #React
           </Badge>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <ActionIcon>
-            <ThumbUp />
-          </ActionIcon>
-          <ActionIcon>
-            <ThumbDown />
-          </ActionIcon>
-          <ActionIcon>
-            <Message />
-          </ActionIcon>
+        <div className="flex flex-wrap items-center gap-5">
+          <ThumbUpIconAction />
+          <ThumbDownIconAction />
         </div>
       </div>
     </Card>
