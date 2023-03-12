@@ -26,7 +26,7 @@ function ThreadDetailPage() {
     <Card className="flex flex-col my-5">
       <ThreadItem thread={data} />
       <ThreadInputComment />
-      <ThreadComments comments={[1, 2, 3, 4, 5, 6, 7]} />
+      <ThreadComments comments={data?.comments ?? []} />
     </Card>
   );
 }
