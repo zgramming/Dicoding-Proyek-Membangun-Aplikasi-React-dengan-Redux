@@ -8,13 +8,13 @@ const initialState = {
   error: null,
 };
 
-export const asyncFetchThread = createAsyncThunk('thread/fetch', async () => {
+export const asyncFetchDetailThread = createAsyncThunk('threadDetail/fetch', async (threadId) => {
   try {
-    const { data: dataRequest } = await axios.get(`${baseAPIURL}/threads`);
+    const { data: dataRequest } = await axios.get(`${baseAPIURL}/threads/${threadId}`);
     const { data: dataResponse } = dataRequest;
-    const { threads } = dataResponse;
+    const { detailThread } = dataResponse;
     return {
-      data: threads,
+      data: detailThread,
       error: false,
     };
   } catch (error) {
@@ -29,31 +29,31 @@ export const asyncFetchThread = createAsyncThunk('thread/fetch', async () => {
   }
 });
 
-export const threadSlice = createSlice({
-  name: 'thread',
+export const threadDetailSlice = createSlice({
+  name: 'threadDetail',
   initialState,
   reducers: {
-    add: (state, action) => {
+    addComment: (state, action) => {
       state.data = [...state, action.payload];
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(asyncFetchThread.pending, (state) => {
-        console.log('asyncFetchThread.pending', { state });
+      .addCase(asyncFetchDetailThread.pending, (state) => {
+        console.log('asyncFetchDetailThread.pending', { state });
         state.isLoading = true;
         state.data = null;
         state.error = null;
       })
-      .addCase(asyncFetchThread.fulfilled, (state, action) => {
-        console.log('asyncFetchThread.fulfilled', { state, action });
+      .addCase(asyncFetchDetailThread.fulfilled, (state, action) => {
+        console.log('asyncFetchDetailThread.fulfilled', { state, action });
         const { data, error } = action.payload;
         state.isLoading = false;
         state.data = data;
         state.error = error;
       })
-      .addCase(asyncFetchThread.rejected, (state, action) => {
-        console.log('asyncFetchThread.rejected', { state, action });
+      .addCase(asyncFetchDetailThread.rejected, (state, action) => {
+        console.log('asyncFetchDetailThread.rejected', { state, action });
         const { message, error } = action;
         state.isLoading = false;
         state.error = error;
@@ -62,6 +62,6 @@ export const threadSlice = createSlice({
   },
 });
 
-export const { add } = threadSlice.actions;
+export const { addComment } = threadDetailSlice.actions;
 
-export default threadSlice.reducer;
+export default threadDetailSlice.reducer;
