@@ -9,6 +9,7 @@ import { asyncFetchThread } from '../rtk/feature/thread/threadSlice';
 function HomePage() {
   const dispatch = useDispatch();
   const { isLoading, data } = useSelector((state) => state.thread);
+
   useEffect(() => {
     dispatch(asyncFetchThread());
   }, [dispatch]);

@@ -1,21 +1,42 @@
 import { Button, Modal, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { asyncCreateThread } from '../rtk/feature/thread/threadSlice';
 
-function ThreadInputModal({ isOpen, onClose }) {
-  const [comment, setComment] = useState('');
+function ThreadInputModal({ isOpen, onClose, onSuccessSubmit }) {
+  const dispatch = useDispatch();
+
+  const [body, setComment] = useState('');
 
   const form = useForm({
-    initialValues: { comment: '', title: '', category: '' },
+    initialValues: { body: '', title: '', category: '' },
     validate: {
-      comment: (value) => (value ? null : 'Comment is required'),
+      body: (value) => (value ? null : 'Body is required'),
       title: (value) => (value ? null : 'Title is required'),
       category: (value) => (value ? null : 'Category is required'),
     },
   });
 
-  const onSubmit = (values) => values;
+  const onSubmit = async (values) => {
+    const { error } = await dispatch(asyncCreateThread(values)).unwrap();
+    if (error) {
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to create thread',
+        color: 'red',
+      });
+    } else {
+      notifications.show({
+        title: 'Success',
+        message: 'Thread created',
+        color: 'green',
+      });
+      onSuccessSubmit();
+    }
+  };
 
   return (
     <Modal opened={isOpen} onClose={onClose} title="Buat Postingan">
@@ -37,16 +58,16 @@ function ThreadInputModal({ isOpen, onClose }) {
           {...form.getInputProps('category')}
         />
         <Textarea
-          placeholder="Your comment"
-          label="Your comment"
+          placeholder="Your body"
+          label="Your body"
           minRows={5}
           onInput={(e) => {
             setComment(e.target.value);
           }}
-          {...form.getInputProps('comment')}
+          {...form.getInputProps('body')}
           withAsterisk
         />
-        <Button type="submit" disabled={!comment}>
+        <Button type="submit" disabled={!body}>
           Posting
         </Button>
       </form>
@@ -57,6 +78,7 @@ function ThreadInputModal({ isOpen, onClose }) {
 ThreadInputModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSuccessSubmit: PropTypes.func.isRequired,
 };
 
 export default ThreadInputModal;
