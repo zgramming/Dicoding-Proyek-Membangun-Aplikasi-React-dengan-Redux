@@ -73,10 +73,9 @@ function Header() {
           <div className="relative h-12 w-12">
             <Image
               radius="md"
-              src="https://picsum.photos/200"
+              src="/logo.png"
               alt="Random image"
               fit="fill"
-              className="shadow-lg"
             />
           </div>
         </Link>

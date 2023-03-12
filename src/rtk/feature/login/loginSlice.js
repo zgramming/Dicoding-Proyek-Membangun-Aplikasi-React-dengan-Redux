@@ -56,18 +56,15 @@ export const loginSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(asyncLogin.pending, (state) => {
-        console.log('asyncLogin.pending', { state });
         state.isLoading = true;
         state.error = null;
         state.data = null;
       })
       .addCase(asyncLogin.fulfilled, (state, action) => {
-        console.log('asyncLogin.fulfilled', { action, state });
         state.isLoading = false;
         state.data = action.payload.token;
       })
       .addCase(asyncLogin.rejected, (state, action) => {
-        console.log('asyncLogin.rejected', { action, state });
         state.isLoading = false;
         state.error = action.payload.message;
       });
