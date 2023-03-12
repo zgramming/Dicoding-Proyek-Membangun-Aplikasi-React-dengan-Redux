@@ -1,13 +1,16 @@
-import { Button, Modal, Textarea, TextInput } from '@mantine/core';
+import { Button, LoadingOverlay, Modal, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { hideLoading, showLoading } from 'react-redux-loading-bar';
 import { asyncCreateThread } from '../rtk/feature/thread/threadSlice';
 
 function ThreadInputModal({ isOpen, onClose, onSuccessSubmit }) {
   const dispatch = useDispatch();
+
+  const { isLoading } = useSelector((state) => state.thread.onCreate);
 
   const [body, setComment] = useState('');
 
@@ -21,6 +24,7 @@ function ThreadInputModal({ isOpen, onClose, onSuccessSubmit }) {
   });
 
   const onSubmit = async (values) => {
+    dispatch(showLoading());
     const { error } = await dispatch(asyncCreateThread(values)).unwrap();
     if (error) {
       notifications.show({
@@ -34,12 +38,16 @@ function ThreadInputModal({ isOpen, onClose, onSuccessSubmit }) {
         message: 'Thread created',
         color: 'green',
       });
+      form.reset();
       onSuccessSubmit();
     }
+    dispatch(hideLoading());
   };
 
   return (
     <Modal opened={isOpen} onClose={onClose} title="Buat Postingan">
+      <LoadingOverlay visible={isLoading} overlayBlur={2} />
+
       <form onSubmit={form.onSubmit(onSubmit)} className="flex flex-col gap-5">
         <TextInput
           withAsterisk

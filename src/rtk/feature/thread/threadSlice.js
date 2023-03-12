@@ -29,11 +29,28 @@ const initialState = {
   },
 };
 
+const fetchUsers = async () => {
+  const { data: dataRequest } = await axios.get(`${baseAPIURL}/users`);
+  const { data: dataResponse } = dataRequest;
+  const { users } = dataResponse;
+
+  return users;
+};
+
 const fetchThreads = async () => {
   const { data: dataRequest } = await axios.get(`${baseAPIURL}/threads`);
   const { data: dataResponse } = dataRequest;
   const { threads } = dataResponse;
-  return threads;
+
+  const users = await fetchUsers();
+
+  return threads.map((val) => {
+    const user = users.find((usr) => usr.id === val.ownerId);
+    return {
+      ...val,
+      user,
+    };
+  });
 };
 
 export const asyncFetchThread = createAsyncThunk('thread/fetch', async () => {

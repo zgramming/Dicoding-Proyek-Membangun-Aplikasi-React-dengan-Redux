@@ -2,6 +2,7 @@ import { Button, Card, LoadingOverlay, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useDispatch, useSelector } from 'react-redux';
+import { hideLoading, showLoading } from 'react-redux-loading-bar';
 import { useNavigate } from 'react-router-dom';
 import { asyncRegister } from '../rtk/feature/register/registerSlice';
 
@@ -19,6 +20,7 @@ function RegisterPage() {
   });
 
   const onSubmit = async (values) => {
+    dispatch(showLoading());
     const result = await dispatch(asyncRegister(values)).unwrap();
     if (result.error) {
       notifications.show({
@@ -34,6 +36,8 @@ function RegisterPage() {
       });
       navigate('/login');
     }
+
+    dispatch(hideLoading());
   };
 
   return (

@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import Container from './components/Container';
 import Header from './components/Header';
 import LoginPage from './pages/LoginPage';
-import NotFoundPage from './pages/NotFoundPage';
 import RegisterPage from './pages/RegisterPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import ThreadDetailPage from './pages/ThreadDetailPage';
@@ -36,7 +35,7 @@ function App() {
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="*" element={<LoginPage />} />
         </Routes>
       </Container>
     </>

@@ -26,7 +26,7 @@
         "comma-dangle": [2, "always-multiline"],
         "react/react-in-jsx-scope": "off",
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }], //should add ".ts" if typescript project
-        "max-len": ["error", { "code": 100 }],
+        "max-len": ["error", { "code": 120 }],
         "object-curly-newline": ["error", { "consistent": true }],
         "no-param-reassign": ["error", { "props": false }]
     
