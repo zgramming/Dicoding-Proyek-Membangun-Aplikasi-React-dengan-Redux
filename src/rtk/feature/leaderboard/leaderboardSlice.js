@@ -8,18 +8,13 @@ const initialState = {
   error: null,
 };
 
-export const asyncRegister = createAsyncThunk('auth/register', async (payload) => {
+export const asyncFetchLeaderboard = createAsyncThunk('leaderboard/fetch', async () => {
   try {
-    const { name, email, password } = payload;
-    const { data: dataRequest } = await axios.post(`${baseAPIURL}/register`, {
-      name,
-      email,
-      password,
-    });
+    const { data: dataRequest } = await axios.get(`${baseAPIURL}/leaderboards`);
     const { data: dataResponse } = dataRequest;
-    const { user } = dataResponse;
+    const { leaderboards } = dataResponse;
     return {
-      data: user,
+      data: leaderboards,
       error: false,
     };
   } catch (error) {
@@ -35,27 +30,25 @@ export const asyncRegister = createAsyncThunk('auth/register', async (payload) =
   }
 });
 
-export const registerSlice = createSlice({
-  name: 'register',
+export const leaderboardSlice = createSlice({
+  name: 'leaderboard',
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(asyncRegister.pending, (state) => {
+      .addCase(asyncFetchLeaderboard.pending, (state) => {
         state.isLoading = true;
         state.error = null;
         state.data = null;
       })
-      .addCase(asyncRegister.fulfilled, (state, action) => {
+      .addCase(asyncFetchLeaderboard.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.data;
+        state.data = action.payload.data;
       })
-      .addCase(asyncRegister.rejected, (state, action) => {
+      .addCase(asyncFetchLeaderboard.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.message;
       });
   },
 });
 
-export default registerSlice.reducer;
-
-// Path: src\rtk\feature\register\Register.js
+export default leaderboardSlice.reducer;

@@ -1,11 +1,22 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { baseAPIURL, keyTokenLocalStorage } from '../../../utils/constant';
+import { baseAPIURL, keyTokenLocalStorage, keyUserLocalStorage } from '../../../utils/constant';
 
 const initialState = {
   isLoading: false,
   data: null,
   error: null,
+};
+
+const myProfile = async (token) => {
+  const { data: dataRequest } = await axios.get(`${baseAPIURL}/users/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const { data: dataResponse } = dataRequest;
+  const { user } = dataResponse;
+  return user;
 };
 
 export const asyncLogin = createAsyncThunk('auth/login', async (payload) => {
@@ -14,13 +25,15 @@ export const asyncLogin = createAsyncThunk('auth/login', async (payload) => {
     const { data: dataRequest } = await axios.post(`${baseAPIURL}/login`, { email, password });
     const { data: dataResponse } = dataRequest;
     const { token } = dataResponse;
+    const user = await myProfile(token);
+
+    localStorage.setItem(keyUserLocalStorage, JSON.stringify(user));
     localStorage.setItem(keyTokenLocalStorage, token);
 
     return {
-      payload: {
-        data: token,
-        error: false,
-      },
+      user,
+      token,
+      error: false,
     };
   } catch (error) {
     let message = error?.message || 'Unknown Error';
@@ -43,15 +56,18 @@ export const loginSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(asyncLogin.pending, (state) => {
+        console.log('asyncLogin.pending', { state });
         state.isLoading = true;
         state.error = null;
         state.data = null;
       })
       .addCase(asyncLogin.fulfilled, (state, action) => {
+        console.log('asyncLogin.fulfilled', { action, state });
         state.isLoading = false;
-        state.data = action.payload.data;
+        state.data = action.payload.token;
       })
       .addCase(asyncLogin.rejected, (state, action) => {
+        console.log('asyncLogin.rejected', { action, state });
         state.isLoading = false;
         state.error = action.payload.message;
       });

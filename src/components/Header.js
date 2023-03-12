@@ -1,7 +1,9 @@
 import { ActionIcon, Button, Drawer, Image } from '@mantine/core';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Menu2, MilitaryRank } from 'tabler-icons-react';
+import { Logout, Menu2, MilitaryRank } from 'tabler-icons-react';
+import { unsetUser } from '../rtk/feature/auth/authSlice';
 import Container from './Container';
 
 function HeaderDrawer() {
@@ -21,6 +23,8 @@ function HeaderDrawer() {
 }
 
 function HeaderMenu() {
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   return (
     <div className="flex flex-col lg:flex-row gap-3">
       <Link to="/leaderboard">
@@ -33,19 +37,30 @@ function HeaderMenu() {
           Leaderboard
         </Button>
       </Link>
-      <Link to="/register">
-        <Button variant="default" className="w-full text-blue-500 lg:w-min">
-          Sign Up
-        </Button>
-      </Link>
-      <Link to="/login">
-        <Button
-          variant="subtle"
-          className="w-full bg-blue-500 text-white hover:!bg-blue-400 lg:w-min"
-        >
-          Sign In
-        </Button>
-      </Link>
+      {user && (
+        <Link to="/login" onClick={() => dispatch(unsetUser())}>
+          <Button leftIcon={<Logout />} color="red">
+            Logout
+          </Button>
+        </Link>
+      )}
+      {!user && (
+        <>
+          <Link to="/register">
+            <Button variant="default" className="w-full text-blue-500 lg:w-min">
+              Sign Up
+            </Button>
+          </Link>
+          <Link to="/login">
+            <Button
+              variant="subtle"
+              className="w-full bg-blue-500 text-white hover:!bg-blue-400 lg:w-min"
+            >
+              Sign In
+            </Button>
+          </Link>
+        </>
+      )}
     </div>
   );
 }

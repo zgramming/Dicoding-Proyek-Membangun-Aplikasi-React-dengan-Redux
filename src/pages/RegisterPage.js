@@ -19,13 +19,12 @@ function RegisterPage() {
   });
 
   const onSubmit = async (values) => {
-    const { payload } = await dispatch(asyncRegister(values)).unwrap();
-    if (payload.error) {
-      const { message } = payload;
+    const result = await dispatch(asyncRegister(values)).unwrap();
+    if (result.error) {
       notifications.show({
         color: 'red',
         title: 'Register Failed',
-        message,
+        message: result.message,
       });
     } else {
       notifications.show({

@@ -42,7 +42,7 @@ ThreadItem.defaultProps = {
 };
 
 ThreadItem.propTypes = {
-  thread: PropTypes.string.isRequired,
+  thread: PropTypes.number.isRequired,
   cardWithBorder: PropTypes.bool,
 };
 

@@ -2,11 +2,13 @@ import { Button, Card, LoadingOverlay, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { asyncLogin } from '../rtk/feature/login/loginSlice';
 
 function LoginPage() {
   const { isLoading } = useSelector((state) => state.login);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: { email: '', password: '' },
@@ -18,7 +20,7 @@ function LoginPage() {
 
   const onSubmit = async (values) => {
     const { payload } = await dispatch(asyncLogin(values)).unwrap();
-    if (payload.error) {
+    if (payload?.error) {
       const { message } = payload;
       notifications.show({
         color: 'red',
@@ -31,6 +33,7 @@ function LoginPage() {
         title: 'Login',
         message: 'Login success',
       });
+      navigate('/');
     }
   };
 
