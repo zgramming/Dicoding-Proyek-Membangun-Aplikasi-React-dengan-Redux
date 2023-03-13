@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { hideLoading, showLoading } from 'react-redux-loading-bar';
 import { baseAPIURL, keyTokenLocalStorage, keyUserLocalStorage } from '../../../utils/constant';
 
 const initialState = {
@@ -19,8 +20,9 @@ const myProfile = async (token) => {
   return user;
 };
 
-export const asyncLogin = createAsyncThunk('auth/login', async (payload) => {
+export const asyncLogin = createAsyncThunk('auth/login', async (payload, thunkApi) => {
   try {
+    thunkApi.dispatch(showLoading());
     const { email, password } = payload;
     const { data: dataRequest } = await axios.post(`${baseAPIURL}/login`, { email, password });
     const { data: dataResponse } = dataRequest;
@@ -47,6 +49,8 @@ export const asyncLogin = createAsyncThunk('auth/login', async (payload) => {
         error: true,
       },
     };
+  } finally {
+    thunkApi.dispatch(hideLoading());
   }
 });
 

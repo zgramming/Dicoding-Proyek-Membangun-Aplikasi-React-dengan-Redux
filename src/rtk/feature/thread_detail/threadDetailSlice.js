@@ -196,7 +196,10 @@ export const threadDetailSlice = createSlice({
   initialState,
   reducers: {
     addComment: (state, action) => {
-      state.data = [...state, action.payload];
+      state.data = {
+        ...state.data,
+        comments: [...state.data.comments, action.payload],
+      };
     },
   },
   extraReducers: (builder) => {
