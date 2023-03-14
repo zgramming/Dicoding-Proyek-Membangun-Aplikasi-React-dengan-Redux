@@ -17,17 +17,13 @@ import api from '../../utils/api';
 
 describe('asyncFetchLeaderboard Thunk', () => {
   const fakeLeaderboardSuccessResponse = {
-    status: 'success',
-    message: 'ok',
-    data: {
-      leaderboards: [
-        {
-          id: 1,
-          name: 'admin',
-          score: 100,
-        },
-      ],
-    },
+    data: [
+      {
+        id: 1,
+        name: 'admin',
+        score: 100,
+      },
+    ],
   };
 
   const fakeLeaderboardErrorResponse = {
@@ -54,7 +50,7 @@ describe('asyncFetchLeaderboard Thunk', () => {
 
     expect(dispatch).toHaveBeenCalledWith(showLoading());
     expect(dispatch).toHaveBeenCalledWith(onLoadingLeaderboard());
-    // expect(dispatch).toHaveBeenCalledWith(onSuccessLeaderboard({ data: fakeLeaderboardSuccessResponse }));
+    expect(dispatch).toHaveBeenCalledWith(onSuccessLeaderboard(fakeLeaderboardSuccessResponse));
     expect(dispatch).toHaveBeenCalledWith(hideLoading());
   });
 
@@ -67,7 +63,7 @@ describe('asyncFetchLeaderboard Thunk', () => {
 
     expect(dispatch).toHaveBeenCalledWith(showLoading());
     expect(dispatch).toHaveBeenCalledWith(onLoadingLeaderboard());
-    // expect(dispatch).toHaveBeenCalledWith(onErrorLeaderboard({ message: fakeLeaderboardErrorResponse.message }));
+    expect(dispatch).toHaveBeenCalledWith(onErrorLeaderboard({ message: fakeLeaderboardErrorResponse.message }));
     expect(dispatch).toHaveBeenCalledWith(hideLoading());
   });
 });

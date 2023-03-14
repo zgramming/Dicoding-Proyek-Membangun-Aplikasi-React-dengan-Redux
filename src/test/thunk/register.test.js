@@ -19,8 +19,6 @@ import {
 
 describe('asyncRegister Thunk', () => {
   const fakeRegisterSuccessResponse = {
-    status: 'success',
-    message: 'ok',
     data: {
       user: {
         id: '1',
@@ -57,7 +55,7 @@ describe('asyncRegister Thunk', () => {
     })(dispatch);
     expect(dispatch).toHaveBeenCalledWith(showLoading());
     expect(dispatch).toHaveBeenCalledWith(onLoadingRegister());
-    // expect(dispatch).toHaveBeenCalledWith(onSuccessRegister({ data: fakeRegisterSuccessResponse }));
+    expect(dispatch).toHaveBeenCalledWith(onSuccessRegister(fakeRegisterSuccessResponse));
     expect(dispatch).toHaveBeenCalledWith(hideLoading());
   });
 
@@ -66,11 +64,15 @@ describe('asyncRegister Thunk', () => {
 
     const dispatch = jest.fn();
 
-    await asyncRegister()(dispatch);
+    await asyncRegister({
+      name: 'Zeffry Reynando',
+      email: 'zeffry.reynando@gmail.com',
+      password: 'zeffry',
+    })(dispatch);
 
     expect(dispatch).toHaveBeenCalledWith(showLoading());
     expect(dispatch).toHaveBeenCalledWith(onLoadingRegister());
-    // expect(dispatch).toHaveBeenCalledWith(onErrorRegister({ message: fakeRegisterErrorResponse.message }));
+    expect(dispatch).toHaveBeenCalledWith(onErrorRegister({ message: fakeRegisterErrorResponse.message }));
     expect(dispatch).toHaveBeenCalledWith(hideLoading());
   });
 });

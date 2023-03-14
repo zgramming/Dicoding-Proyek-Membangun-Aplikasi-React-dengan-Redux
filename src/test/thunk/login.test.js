@@ -11,11 +11,13 @@ import api from '../../utils/api';
 import { asyncLogin, onErrorLogin, onLoadingLogin, onSuccessLogin } from '../../rtk/feature/login/loginSlice';
 
 const fakeLoginSuccessResponse = {
-  status: 'success',
-  message: 'ok',
-  data: {
-    token: 'token',
+  user: {
+    id: 1,
+    name: 'Zeffry Reynando',
+    email: 'zeffry.reynando@gmail.com',
+    avatar: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
   },
+  token: 'token',
 };
 
 const fakeLoginErrorResponse = {
@@ -45,7 +47,7 @@ describe('asyncLogin thunk', () => {
     /// assert
     expect(dispatch).toHaveBeenCalledWith(showLoading());
     expect(dispatch).toHaveBeenCalledWith(onLoadingLogin());
-    // expect(dispatch).toHaveBeenCalledWith(onSuccessLogin(fakeLoginSuccessResponse));
+    expect(dispatch).toHaveBeenCalledWith(onSuccessLogin({ token: fakeLoginSuccessResponse.token }));
     expect(dispatch).toHaveBeenCalledWith(hideLoading());
   });
 
@@ -60,11 +62,11 @@ describe('asyncLogin thunk', () => {
     /// assert
     expect(dispatch).toHaveBeenCalledWith(showLoading());
     expect(dispatch).toHaveBeenCalledWith(onLoadingLogin());
-    // expect(dispatch).toHaveBeenCalledWith(
-    //   onErrorLogin({
-    //     message: fakeLoginErrorResponse.message,
-    //   }),
-    // );
+    expect(dispatch).toHaveBeenCalledWith(
+      onErrorLogin({
+        message: fakeLoginErrorResponse.message,
+      }),
+    );
     expect(dispatch).toHaveBeenCalledWith(hideLoading());
   });
 });
