@@ -16,7 +16,7 @@ function LoginInput({ onSubmit }) {
       <TextInput
         withAsterisk
         label="Email"
-        placeholder="yours@email.com"
+        placeholder="your@email.com"
         name="email"
         type="email"
         {...form.getInputProps('email')}
