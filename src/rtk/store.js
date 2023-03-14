@@ -7,15 +7,17 @@ import LeaderboardReducer from './feature/leaderboard/leaderboardSlice';
 import ThreadReducer from './feature/thread/threadSlice';
 import ThreadDetailReducer from './feature/thread_detail/threadDetailSlice';
 
+export const myReducer = {
+  threadDetail: ThreadDetailReducer,
+  thread: ThreadReducer,
+  leaderboard: LeaderboardReducer,
+  auth: AuthReducer,
+  login: LoginReducer,
+  register: RegisterReducer,
+  loadingBar: loadingBarReducer,
+};
+
 export default configureStore({
-  reducer: {
-    threadDetail: ThreadDetailReducer,
-    thread: ThreadReducer,
-    leaderboard: LeaderboardReducer,
-    auth: AuthReducer,
-    login: LoginReducer,
-    register: RegisterReducer,
-    loadingBar: loadingBarReducer,
-  },
+  reducer: myReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(loadingBarMiddleware()),
 });

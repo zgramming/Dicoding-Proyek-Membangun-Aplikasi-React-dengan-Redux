@@ -30,7 +30,8 @@
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }], //should add ".ts" if typescript project
         "max-len": ["error", { "code": 120 }],
         "object-curly-newline": ["error", { "consistent": true }],
-        "no-param-reassign": ["error", { "props": false }]
-    
+        "no-param-reassign": ["error", { "props": false }],
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}]
+  
     }
 }
