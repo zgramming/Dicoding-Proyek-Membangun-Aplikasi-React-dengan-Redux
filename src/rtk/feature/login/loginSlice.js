@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { hideLoading, showLoading } from 'react-redux-loading-bar';
-import { baseAPIURL, keyTokenLocalStorage, keyUserLocalStorage } from '../../../utils/constant';
+import api from '../../../utils/api';
 
 const initialState = {
   isLoading: false,
@@ -9,32 +9,41 @@ const initialState = {
   error: null,
 };
 
-const myProfile = async (token) => {
-  const { data: dataRequest } = await axios.get(`${baseAPIURL}/users/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+export const loginSlice = createSlice({
+  name: 'login',
+  initialState,
+  reducers: {
+    onLoadingLogin: (state) => {
+      state.isLoading = true;
+      state.error = null;
+      state.data = null;
     },
-  });
-  const { data: dataResponse } = dataRequest;
-  const { user } = dataResponse;
-  return user;
-};
+    onSuccessLogin: (state, action) => {
+      state.isLoading = false;
+      state.data = action.payload.token;
+    },
+    onErrorLogin: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.message;
+    },
+  },
+});
 
-export const asyncLogin = createAsyncThunk('auth/login', async (payload, thunkApi) => {
+export const { onSuccessLogin, onLoadingLogin, onErrorLogin } = loginSlice.actions;
+
+export const asyncLogin = createAsyncThunk('auth/login', async (payload, { dispatch }) => {
   try {
-    thunkApi.dispatch(showLoading());
+    dispatch(showLoading());
+    dispatch(onLoadingLogin());
     const { email, password } = payload;
-    const { data: dataRequest } = await axios.post(`${baseAPIURL}/login`, { email, password });
-    const { data: dataResponse } = dataRequest;
-    const { token } = dataResponse;
-    const user = await myProfile(token);
-
-    localStorage.setItem(keyUserLocalStorage, JSON.stringify(user));
-    localStorage.setItem(keyTokenLocalStorage, token);
-
+    const result = await api.login({ email, password });
+    dispatch(
+      onSuccessLogin({
+        token: result.token,
+      }),
+    );
     return {
-      user,
-      token,
+      ...result,
       error: false,
     };
   } catch (error) {
@@ -43,6 +52,8 @@ export const asyncLogin = createAsyncThunk('auth/login', async (payload, thunkAp
       message = error?.response?.data?.message || 'Unknown Error';
     }
 
+    dispatch(onErrorLogin({ message }));
+
     return {
       payload: {
         message,
@@ -50,29 +61,8 @@ export const asyncLogin = createAsyncThunk('auth/login', async (payload, thunkAp
       },
     };
   } finally {
-    thunkApi.dispatch(hideLoading());
+    dispatch(hideLoading());
   }
-});
-
-export const loginSlice = createSlice({
-  name: 'login',
-  initialState,
-  extraReducers: (builder) => {
-    builder
-      .addCase(asyncLogin.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-        state.data = null;
-      })
-      .addCase(asyncLogin.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.data = action.payload.token;
-      })
-      .addCase(asyncLogin.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload.message;
-      });
-  },
 });
 
 export default loginSlice.reducer;

@@ -3,7 +3,6 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hideLoading, showLoading } from 'react-redux-loading-bar';
 import { useParams } from 'react-router-dom';
 import { asyncCreateComment } from '../rtk/feature/thread_detail/threadDetailSlice';
 
@@ -22,7 +21,6 @@ function ThreadInputComment() {
   });
 
   const onSubmit = async (values) => {
-    dispatch(showLoading());
     const result = await dispatch(
       asyncCreateComment({
         ...values,
@@ -46,7 +44,6 @@ function ThreadInputComment() {
       // Reset form
       form.reset();
     }
-    dispatch(hideLoading());
   };
 
   return (

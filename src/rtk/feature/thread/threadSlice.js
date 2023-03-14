@@ -110,19 +110,16 @@ export const asyncCreateThread = createAsyncThunk('thread/create', async (payloa
 
 export const asyncUpVoteThread = createAsyncThunk('thread/upvote', async (threadId) => {
   try {
-    const { data: dataRequest } = await axios.post(
-      `${baseAPIURL}/threads/${threadId}/up-vote`,
-      null,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(keyTokenLocalStorage)}`,
-        },
+    const { data: dataRequest } = await axios.post(`${baseAPIURL}/threads/${threadId}/up-vote`, null, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(keyTokenLocalStorage)}`,
       },
-    );
+    });
     const { data: dataResponse } = dataRequest;
     const { vote } = dataResponse;
     const threads = await fetchThreads();
     return {
+      threadId,
       threads,
       data: vote,
       error: false,
@@ -141,18 +138,15 @@ export const asyncUpVoteThread = createAsyncThunk('thread/upvote', async (thread
 
 export const asyncDownVoteThread = createAsyncThunk('thread/downvote', async (threadId) => {
   try {
-    const { data: dataRequest } = await axios.post(
-      `${baseAPIURL}/threads/${threadId}/down-vote`,
-      null,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(keyTokenLocalStorage)}`,
-        },
+    const { data: dataRequest } = await axios.post(`${baseAPIURL}/threads/${threadId}/down-vote`, null, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(keyTokenLocalStorage)}`,
       },
-    );
+    });
     const { data: dataResponse } = dataRequest;
     const { vote } = dataResponse;
     return {
+      threadId,
       data: vote,
       threads: await fetchThreads(),
       error: false,
@@ -171,18 +165,15 @@ export const asyncDownVoteThread = createAsyncThunk('thread/downvote', async (th
 
 export const asyncNeutralVote = createAsyncThunk('thread/neutralvote', async (threadId) => {
   try {
-    const { data: dataRequest } = await axios.post(
-      `${baseAPIURL}/threads/${threadId}/neutral-vote`,
-      null,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(keyTokenLocalStorage)}`,
-        },
+    const { data: dataRequest } = await axios.post(`${baseAPIURL}/threads/${threadId}/neutral-vote`, null, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(keyTokenLocalStorage)}`,
       },
-    );
+    });
     const { data: dataResponse } = dataRequest;
     const { vote } = dataResponse;
     return {
+      threadId,
       data: vote,
       threads: await fetchThreads(),
       error: false,

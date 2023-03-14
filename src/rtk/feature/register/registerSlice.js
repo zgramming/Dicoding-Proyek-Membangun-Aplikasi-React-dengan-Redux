@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { hideLoading, showLoading } from 'react-redux-loading-bar';
-import { baseAPIURL } from '../../../utils/constant';
+import api from '../../../utils/api';
 
 const initialState = {
   isLoading: false,
@@ -9,19 +9,41 @@ const initialState = {
   error: null,
 };
 
-export const asyncRegister = createAsyncThunk('auth/register', async (payload, thunkApi) => {
+export const registerSlice = createSlice({
+  name: 'register',
+  initialState,
+  reducers: {
+    onLoadingRegister: (state) => {
+      state.isLoading = true;
+      state.error = null;
+      state.data = null;
+    },
+    onSuccessRegister: (state, action) => {
+      state.isLoading = false;
+      state.data = action.payload.data;
+    },
+    onErrorRegister: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.message;
+    },
+  },
+});
+
+export const { onSuccessRegister, onLoadingRegister, onErrorRegister } = registerSlice.actions;
+
+export const asyncRegister = createAsyncThunk('auth/register', async (payload, { dispatch }) => {
   try {
-    thunkApi.dispatch(showLoading());
-    const { name, email, password } = payload;
-    const { data: dataRequest } = await axios.post(`${baseAPIURL}/register`, {
-      name,
-      email,
-      password,
-    });
-    const { data: dataResponse } = dataRequest;
-    const { user } = dataResponse;
+    dispatch(showLoading());
+    dispatch(onLoadingRegister());
+    const { name = '', email = '', password = '' } = payload;
+    const result = await api.register({ name, email, password });
+    dispatch(
+      onSuccessRegister({
+        data: result.data,
+      }),
+    );
     return {
-      data: user,
+      ...result,
       error: false,
     };
   } catch (error) {
@@ -30,36 +52,15 @@ export const asyncRegister = createAsyncThunk('auth/register', async (payload, t
       message = error?.response?.data?.message || 'Unknown Error';
     }
 
+    dispatch(onErrorRegister({ message }));
+
     return {
       message,
       error: true,
     };
   } finally {
-    thunkApi.dispatch(hideLoading());
+    dispatch(hideLoading());
   }
 });
 
-export const registerSlice = createSlice({
-  name: 'register',
-  initialState,
-  extraReducers: (builder) => {
-    builder
-      .addCase(asyncRegister.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-        state.data = null;
-      })
-      .addCase(asyncRegister.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.data = action.data;
-      })
-      .addCase(asyncRegister.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.message;
-      });
-  },
-});
-
 export default registerSlice.reducer;
-
-// Path: src\rtk\feature\register\Register.js

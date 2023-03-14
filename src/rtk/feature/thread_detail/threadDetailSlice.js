@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { hideLoading, showLoading } from 'react-redux-loading-bar';
+import api from '../../../utils/api';
 import { baseAPIURL, keyTokenLocalStorage } from '../../../utils/constant';
 import { asyncDownVoteThread, asyncNeutralVote, asyncUpVoteThread } from '../thread/threadSlice';
 
@@ -55,26 +57,15 @@ export const asyncFetchDetailThread = createAsyncThunk('threadDetail/fetch', asy
   }
 });
 
-export const asyncCreateComment = createAsyncThunk('comment/create', async (payload) => {
+export const asyncCreateComment = createAsyncThunk('comment/create', async (payload, { dispatch }) => {
   try {
-    const { threadId, content } = payload;
-    const { data: dataRequest } = await axios.post(
-      `${baseAPIURL}/threads/${threadId}/comments`,
-      {
-        content,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(keyTokenLocalStorage)}`,
-        },
-      },
-    );
+    dispatch(showLoading());
 
-    const { data: dataResponse } = dataRequest;
-    const { comment } = dataResponse;
+    const { threadId, content } = payload;
+    const result = await api.createComment({ threadId, content });
 
     return {
-      data: comment,
+      ...result,
       error: false,
     };
   } catch (error) {
@@ -86,6 +77,8 @@ export const asyncCreateComment = createAsyncThunk('comment/create', async (payl
       message,
       error: true,
     };
+  } finally {
+    dispatch(hideLoading());
   }
 });
 
@@ -251,10 +244,10 @@ export const threadDetailSlice = createSlice({
 
     // Upvote thread
     builder.addCase(asyncUpVoteThread.fulfilled, (state, action) => {
-      const { threads } = action.payload;
+      const { threads, threadId } = action.payload;
 
       // Update thread detail
-      const thread = threads.find((val) => val.id === state.data.id);
+      const thread = threads.find((val) => val.id === threadId);
       state.data = {
         ...state.data,
         ...thread,
@@ -263,10 +256,10 @@ export const threadDetailSlice = createSlice({
 
     // Downvote thread
     builder.addCase(asyncDownVoteThread.fulfilled, (state, action) => {
-      const { threads } = action.payload;
+      const { threads, threadId } = action.payload;
 
       // Update thread detail
-      const thread = threads.find((val) => val.id === state.data.id);
+      const thread = threads.find((val) => val.id === threadId);
       state.data = {
         ...state.data,
         ...thread,
@@ -275,10 +268,10 @@ export const threadDetailSlice = createSlice({
 
     // Neutral vote thread
     builder.addCase(asyncNeutralVote.fulfilled, (state, action) => {
-      const { threads } = action.payload;
+      const { threads, threadId } = action.payload;
 
       // Update thread detail
-      const thread = threads.find((val) => val.id === state.data.id);
+      const thread = threads.find((val) => val.id === threadId);
       state.data = {
         ...state.data,
         ...thread,

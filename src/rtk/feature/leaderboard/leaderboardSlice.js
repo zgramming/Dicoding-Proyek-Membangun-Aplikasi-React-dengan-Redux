@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { baseAPIURL } from '../../../utils/constant';
+import { hideLoading, showLoading } from 'react-redux-loading-bar';
+import api from '../../../utils/api';
 
 const initialState = {
   isLoading: false,
@@ -8,13 +9,37 @@ const initialState = {
   error: null,
 };
 
-export const asyncFetchLeaderboard = createAsyncThunk('leaderboard/fetch', async () => {
+export const leaderboardSlice = createSlice({
+  name: 'leaderboard',
+  initialState,
+  reducers: {
+    onLoadingLeaderboard: (state) => {
+      state.isLoading = true;
+      state.error = null;
+      state.data = null;
+    },
+    onSuccessLeaderboard: (state, action) => {
+      state.isLoading = false;
+      state.data = action.payload.data;
+    },
+    onErrorLeaderboard: (state, action) => {
+      state.isLoading = false;
+      state.error = action.message;
+    },
+  },
+});
+
+export const { onLoadingLeaderboard, onSuccessLeaderboard, onErrorLeaderboard } = leaderboardSlice.actions;
+
+// eslint-disable-next-line no-unused-vars
+export const asyncFetchLeaderboard = createAsyncThunk('leaderboard/fetch', async (_, thunkApi) => {
   try {
-    const { data: dataRequest } = await axios.get(`${baseAPIURL}/leaderboards`);
-    const { data: dataResponse } = dataRequest;
-    const { leaderboards } = dataResponse;
+    thunkApi.dispatch(showLoading());
+    thunkApi.dispatch(onLoadingLeaderboard());
+    const result = await api.fetchLeaderboard();
+    thunkApi.dispatch(onSuccessLeaderboard({ data: result.data }));
     return {
-      data: leaderboards,
+      ...result,
       error: false,
     };
   } catch (error) {
@@ -23,32 +48,14 @@ export const asyncFetchLeaderboard = createAsyncThunk('leaderboard/fetch', async
       message = error?.response?.data?.message || 'Unknown Error';
     }
 
+    thunkApi.dispatch(onErrorLeaderboard({ message }));
     return {
       message,
       error: true,
     };
+  } finally {
+    thunkApi.dispatch(hideLoading());
   }
-});
-
-export const leaderboardSlice = createSlice({
-  name: 'leaderboard',
-  initialState,
-  extraReducers: (builder) => {
-    builder
-      .addCase(asyncFetchLeaderboard.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-        state.data = null;
-      })
-      .addCase(asyncFetchLeaderboard.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.data = action.payload.data;
-      })
-      .addCase(asyncFetchLeaderboard.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.message;
-      });
-  },
 });
 
 export default leaderboardSlice.reducer;
