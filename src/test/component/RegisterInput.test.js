@@ -68,7 +68,7 @@ describe('Register Input Component', () => {
     await userEvent.type(emailInput, 'zeffry.reynando@gmail.com');
     const passwordInput = await screen.findByPlaceholderText('******');
     await userEvent.type(passwordInput, 'zeffry');
-    const registerButton = await screen.findByRole('button', { name: 'Login' });
+    const registerButton = await screen.findByRole('button', { name: 'Register' });
 
     /// Act
     await userEvent.click(registerButton);

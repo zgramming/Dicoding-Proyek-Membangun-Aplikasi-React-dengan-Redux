@@ -37,7 +37,7 @@ function RegisterInput({ onSubmit }) {
         type="password"
         {...form.getInputProps('password')}
       />
-      <Button type="submit">Login</Button>
+      <Button type="submit">Register</Button>
     </form>
   );
 }
