@@ -17,7 +17,7 @@ function CategoryFilter() {
   }, [dispatch, selectedCategory]);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="home-page flex flex-col gap-3">
       <div className="text-base">{`Kategori Populer Saat Ini ${categories?.length ?? 0}`}</div>
       <div className="flex flex-wrap gap-3">
         {categories?.map((category) => (
