@@ -2,11 +2,7 @@ import { ActionIcon } from '@mantine/core';
 import { ThumbDown } from 'tabler-icons-react';
 import PropTypes from 'prop-types';
 
-function ThumbDownIconAction({
-  isActive = false,
-  number = 0,
-  onClick = () => '',
-}) {
+function ThumbDownIconAction({ isActive = false, number = 0, onClick = () => '' }) {
   return (
     <ActionIcon onClick={onClick}>
       <div className="flex flex-row items-center">
