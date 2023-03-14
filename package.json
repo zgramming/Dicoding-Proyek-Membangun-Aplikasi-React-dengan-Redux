@@ -20,6 +20,7 @@
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "redux": "^4.2.1",
+    "styled-components": "^5.3.9",
     "tabler-icons-react": "^1.56.0",
     "web-vitals": "^2.1.4"
   },
@@ -31,12 +32,24 @@
     "lint": "npx eslint ./src",
     "e2e": "cypress run",
     "cypress:open": "cypress open",
-    "ci:test": "react-scripts test --watchAll=false && start-server-and-test start http-get://0.0.0.0:3000 e2e"
+    "ci:test": "react-scripts test --watchAll=false && start-server-and-test start http-get://0.0.0.0:3000 e2e",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
     ]
   },
   "browserslist": {
@@ -53,11 +66,22 @@
   },
   "devDependencies": {
     "@redux-devtools/core": "^3.13.1",
+    "@storybook/addon-actions": "^6.5.16",
+    "@storybook/addon-essentials": "^6.5.16",
+    "@storybook/addon-interactions": "^6.5.16",
+    "@storybook/addon-links": "^6.5.16",
+    "@storybook/builder-webpack5": "^6.5.16",
+    "@storybook/manager-webpack5": "^6.5.16",
+    "@storybook/node-logger": "^6.5.16",
+    "@storybook/preset-create-react-app": "^4.1.2",
+    "@storybook/react": "^6.5.16",
+    "@storybook/testing-library": "^0.0.13",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
     "babel-jest": "^29.5.0",
+    "babel-plugin-named-exports-order": "^0.0.2",
     "cypress": "^12.7.0",
     "eslint": "^8.36.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -66,9 +90,11 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-storybook": "^0.6.11",
     "jest": "^27.5.1",
     "start-server-and-test": "^2.0.0",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.2.7",
+    "webpack": "^5.76.1"
   },
   "jest": {
     "moduleNameMapper": {
